@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Project</title>
+</head>
+<body>
+
+<script>
+  fetch("/api/auth")
+    .then(r => r.json())
+    .then(a => { if (!a.authenticated) location.href="/login.html"; });
+</script>
+
+<h1 id="title"></h1>
+<p id="description"></p>
+
+<h2>Leave a review</h2>
+<form id="form">
+  <input name="author" placeholder="Your name" required><br><br>
+  <textarea name="comment" placeholder="Your review" required></textarea><br><br>
+  <button>Submit</button>
+</form>
+
+<script>
+  const slug = new URLSearchParams(location.search).get("slug");
+
+  fetch(`/api/project?slug=${slug}`)
+    .then(r => r.json())
+    .then(p => {
+      title.textContent = p.name;
+      description.textContent = p.description;
+    });
+
+  form.onsubmit = async e => {
+    e.preventDefault();
+    await fetch("/api/review", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        slug,
+        author: form.author.value,
+        comment: form.comment.value
+      })
+    });
+    alert("Review submitted");
+    form.reset();
+  };
+</script>
+
+</body>
+</html>
 
