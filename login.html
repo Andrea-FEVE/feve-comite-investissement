@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Access</title>
+</head>
+<body style="font-family:system-ui;display:flex;justify-content:center;align-items:center;height:100vh;background:#f7f8fa">
+
+<form id="login" style="background:white;padding:24px;border-radius:8px">
+  <h2>Enter password</h2>
+  <input type="password" name="password" required>
+  <button>Continue</button>
+  <p id="error" style="color:red"></p>
+</form>
+
+<script>
+  login.onsubmit = async e => {
+    e.preventDefault();
+    const r = await fetch("/api/login", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ password: login.password.value })
+    });
+    if (r.ok) location.href="/";
+    else error.textContent="Wrong password";
+  };
+</script>
+
+</body>
+</html>
 
