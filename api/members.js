@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (!userId) return res.status(400).end();
 
   const response = await fetch(
-    `https://api.airtable.com/v0/${process.env.BASE_ID}/Members?filterByFormula=${encodeURIComponent(
+    `https://api.airtable.com/v0/${process.env.BASE_ID}/tblT9I7XHoEQ12B5Z/viwzw7T6gEJjgOB9h?filterByFormula=${encodeURIComponent(
       `{UserID}="${userId}"`
     )}`,
     {
