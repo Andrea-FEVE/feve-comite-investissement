@@ -38,13 +38,76 @@
     .section {
       margin-top: 24px;
     }
+
+  label {
+  display: block;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 6px;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tags span {
+  padding: 6px 12px;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tags span.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.tags span.yes { border-color: #2e7d32; }
+.tags span.no { border-color: #c62828; }
+.tags span.conditional { border-color: #ef6c00; }
+
+button {
+  padding: 10px 16px;
+  border: none;
+  background: #333;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
 
 <div class="page" id="project"></div>
+<a href="index.html" style="
+  display: inline-block;
+  margin-bottom: 16px;
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+">
+← Retour à tous les projets
+</a>
 
 <script>
+  function valueOrDefault(value) {
+  if (value === null || value === undefined || value === "") {
+    return "Non renseigné";
+  }
+  return value;
+}
+
+  
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("slug");
 
@@ -52,14 +115,14 @@
     .then(r => r.json())
     .then(p => {
       document.getElementById("project").innerHTML = `
-        <h1>${p.name}</h1>
-        <div class="meta">${p.department} · ${p.dateComite}</div>
+        <h1>${valueOrDefault(p.name)}</h1>
+        <div class="meta">${valueOrDefault(p.department)} · ${p.dateComite}</div>
 
         ${p.photo ? `<img src="${p.photo}" />` : ""}
 
         <div class="section">
           <strong>Nom des porteurs de projets</strong><br>
-          ${p.porteurs}
+          ${valueOrDefault(p.porteurs)}
         </div>
 
         <div class="section">
@@ -76,22 +139,105 @@
           <strong>Lien vers le parcellaire</strong><br>
           ${
             p.parcellaire
-              ? `<a href="${p.parcellaire}" target="_blank">Voir le parcellaire</a>`
+              ? `<a href="${valueOrDefault(p.parcellaire)}" target="_blank">Voir le parcellaire</a>`
               : "—"
           }
         </div>
 
         <div class="section">
           <strong>Description</strong><br>
-          <p>${p.description}</p>
+          <p>${valueOrDefault(p.description)}</p>
         </div>
 
         <div class="section">
           <h2>Votre avis sur le projet</h2>
-          <!-- form comes next -->
+          <div class="section">
+  <h2>Votre avis sur le projet</h2>
+
+  <form id="reviewForm">
+    <input type="hidden" name="user" id="userField">
+    <input type="hidden" name="dateComite" id="dateComiteField">
+
+    <label>
+      🗨️Que pensez-vous de l'opportunité d'investissement dans cette ferme vis à vis de la mission de la foncière ?
+      <textarea name="opportunite" required></textarea>
+    </label>
+
+    <label>
+      Compte tenu des caractéristiques et du prix de la ferme, considérez-vous qu'il y ait un risque s'il devait y avoir revente dans 7 à 10 ans ?
+      <div class="tags" data-name="risque">
+        <span data-value="Fort">Fort</span>
+        <span data-value="Moyen">Moyen</span>
+        <span data-value="Faible">Faible</span>
+      </div>
+    </label>
+
+    <label>
+      A quel point serait-il facile ou difficile de trouver un autre locataire en cas de défaut du/des PP envisagés ?
+      <div class="tags" data-name="locataire">
+        <span data-value="Facile">Facile</span>
+        <span data-value="Modérément facile">Modérément facile</span>
+        <span data-value="Modérément difficile">Modérément difficile</span>
+        <span data-value="Difficile">Difficile</span>
+        <span data-value="Très difficile">Très difficile</span>
+      </div>
+    </label>
+
+    <label>
+      Compte tenu des éléments communiqués, pensez-vous que LES FEVES doivent investir dans cette ferme ?
+      <div class="tags" data-name="decision">
+        <span data-value="Oui" class="yes">Oui</span>
+        <span data-value="Oui avec des conditions suspensives" class="conditional">Oui avec conditions</span>
+        <span data-value="Non" class="no">Non</span>
+      </div>
+    </label>
+
+    <label id="conditionsField" style="display:none">
+      🗨️Précisez vos éventuelles conditions suspensives à l'acquisition
+      <textarea name="conditions"></textarea>
+    </label>
+
+    <label>
+      🗨️Donnez ici votre avis général sur la ferme, le projet ou posez vos questions
+      <textarea name="avis"></textarea>
+    </label>
+
+    <button type="submit">Envoyer mon avis</button>
+  </form>
+</div>
+
         </div>
       `;
     });
+
+  const cookies = Object.fromEntries(
+  document.cookie.split("; ").map(c => c.split("="))
+);
+
+document.getElementById("userField").value =
+  decodeURIComponent(cookies.user || "Inconnu");
+
+function setupTags() {
+  document.querySelectorAll(".tags").forEach(group => {
+    group.addEventListener("click", e => {
+      if (e.target.tagName !== "SPAN") return;
+
+      group.querySelectorAll("span").forEach(s => s.classList.remove("active"));
+      e.target.classList.add("active");
+
+      const name = group.dataset.name;
+      group.dataset.value = e.target.dataset.value;
+
+      if (name === "decision") {
+        document.getElementById("conditionsField").style.display =
+          e.target.dataset.value.includes("conditions") ? "block" : "none";
+      }
+    });
+  });
+}
+
+setupTags();
+
 </script>
 
 </body>
