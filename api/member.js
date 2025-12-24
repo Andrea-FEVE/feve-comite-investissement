@@ -8,6 +8,7 @@ export default async function handler(req, res) {
   );
 
   const userId = cookies.user;
+  console.log(userId);
   if (!userId) return res.status(400).end();
 
   const response = await fetch(
