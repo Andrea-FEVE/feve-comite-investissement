@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         name: fields["Name"],
         slug: fields["Slug"],
         department: fields["Département"] || "",
-        dateComite: fields["📅Comité"],
+        dateComite: fields["DateComite"],
         photo: fields["📷Photos"]?.[0]?.url || null
       };
     })
