@@ -80,14 +80,18 @@
 
 <div id="projects" class="grid"></div>
 <script>
-  const cookies = Object.fromEntries(
-    document.cookie.split("; ").map(c => c.split("="))
-  );
+let currentMember = null;
 
-  if (cookies.user) {
+fetch("/api/member")
+  .then(r => r.json())
+  .then(member => {
+    currentMember = member;
     document.getElementById("userGreeting").textContent =
-      `Bonjour ${decodeURIComponent(cookies.user)}`;
-  }
+      `Bonjour ${member.fullName}`;
+
+    document.getElementById("userField").value = member.recordId;
+  });
+
 </script>
 
 <script>
