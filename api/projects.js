@@ -4,7 +4,6 @@ export default async function handler(req, res) {
     return res.status(401).end();
   }
 
-  // Fetch projects from specific table + view
   const response = await fetch(
     `https://api.airtable.com/v0/${process.env.BASE_ID}/tbleKBzmDOWxF0tRk?view=viwET6wrgoOEjsFKJ`,
     {
@@ -16,17 +15,22 @@ export default async function handler(req, res) {
 
   const data = await response.json();
 
-  const projects = data.records.map(record => {
-    const fields = record.fields;
+  const projects = data.records
+    .map(record => {
+      const fields = record.fields;
 
-    return {
-      name: fields["Name"],
-      slug: fields["Slug"],
-      department: fields["Département"] || "",
-      dateComite: fields["📅Comité"] || "",
-      photo: fields["📷Photos"]?.[0]?.url || null
-    };
-  });
+      // ❌ Exclude invalid records
+      if (!fields["Name"] || !fields["📅Comité"]) return null;
+
+      return {
+        name: fields["Name"],
+        slug: fields["Slug"],
+        department: fields["Département"] || "",
+        dateComite: fields["📅Comité"],
+        photo: fields["📷Photos"]?.[0]?.url || null
+      };
+    })
+    .filter(Boolean); // remove nulls
 
   res.json(projects);
 }
