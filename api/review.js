@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         fields: {
-          "Utilisateur": body.user,
+          "Utilisateur": [body.user],
           "DateComite": body.dateComite,
           "🗨️Que pensez-vous de l'opportunité d'investissement dans cette ferme vis à vis de la mission de la foncière ?": body.opportunite,
           "Risque revente": body.risque,
@@ -36,7 +36,7 @@ document.getElementById("reviewForm").addEventListener("submit", e => {
   const form = e.target;
 
   const payload = {
-    user: form.user.value,
+    user: currentMember.recordId,
     dateComite: document.getElementById("dateComiteField").value,
     opportunite: form.opportunite.value,
     risque: document.querySelector('[data-name="risque"]').dataset.value,
