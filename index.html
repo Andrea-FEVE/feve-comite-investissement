@@ -65,6 +65,28 @@
 </head>
 <body>
 <div class="page">
+  <div id="userGreeting" style="margin-bottom:16px;font-weight:500"></div>
+<script>
+  console.log("🔄 Fetching member info...");
+
+  fetch("/api/member")
+    .then(r => {
+      console.log("📡 /api/member status:", r.status);
+      return r.json();
+    })
+    .then(member => {
+      console.log("✅ Member loaded:", member);
+      document.getElementById("userGreeting").textContent =
+        `Bonjour ${member.fullName}`;
+
+      // store globally for forms
+      window.currentMember = member;
+    })
+    .catch(err => {
+      console.error("❌ Failed to load member:", err);
+    });
+</script>
+
 <script>
   fetch("/api/auth")
     .then(r => r.json())
