@@ -23,6 +23,7 @@ export default async function handler(req, res) {
       name: fields["Name"],
       slug: fields["Slug"],
       department: fields["Département"] || "",
+      dateComite: fields["📅Comité"] || "",
       photo: fields["📷Photos"]?.[0]?.url || null
     };
   });
