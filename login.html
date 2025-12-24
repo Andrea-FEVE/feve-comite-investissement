@@ -17,15 +17,21 @@
 <script>
   login.onsubmit = async e => {
     e.preventDefault();
-    const r = await fetch("/api/login", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ password: login.password.value })
+
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user: login.user.value,
+        password: login.password.value
+      })
     });
-    if (r.ok) location.href="/";
-    else error.textContent="Wrong password";
+
+    if (res.ok) location.href = "/";
+    else error.textContent = "Invalid name or password";
   };
 </script>
+
 
 </body>
 </html>
