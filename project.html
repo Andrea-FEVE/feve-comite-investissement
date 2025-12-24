@@ -58,22 +58,57 @@ textarea {
 }
 
 .tags span {
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 50px;
-  border: 1px solid #ccc;
+  border: 1px solid;
   cursor: pointer;
   font-size: 14px;
+  background: white;
+  transition: all 0.15s ease;
 }
 
-.tags span.active {
-  background: #333;
+/* Colors (border by default) */
+.tags span.yes {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.tags span.no {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.tags span.conditional {
+  border-color: #ef6c00;
+  color: #ef6c00;
+}
+
+.tags span.neutral {
+  border-color: #555;
+  color: #555;
+}
+
+/* Active = filled */
+.tags span.active.yes {
+  background: #2e7d32;
   color: white;
-  border-color: #333;
 }
 
-.tags span.yes { border-color: #2e7d32; }
-.tags span.no { border-color: #c62828; }
-.tags span.conditional { border-color: #ef6c00; }
+.tags span.active.no {
+  background: #c62828;
+  color: white;
+}
+
+.tags span.active.conditional {
+  background: #ef6c00;
+  color: white;
+}
+
+.tags span.active.neutral {
+  background: #555;
+  color: white;
+}
+
 
 button {
   padding: 10px 16px;
