@@ -10,6 +10,11 @@
     padding: 40px;
   }
 
+  .page {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
   h1 {
     margin-bottom: 24px;
   }
@@ -59,12 +64,13 @@
 
 </head>
 <body>
-
+<div class="page">
 <script>
   fetch("/api/auth")
     .then(r => r.json())
     .then(a => { if (!a.authenticated) location.href="/login.html"; });
 </script>
+<div id="userGreeting" style="margin-bottom: 16px; font-weight: 500;"></div>
 
 <h1>Projects</h1>
   <label for="dateFilter">Filter by date:</label>
@@ -73,6 +79,16 @@
 </select>
 
 <div id="projects" class="grid"></div>
+<script>
+  const cookies = Object.fromEntries(
+    document.cookie.split("; ").map(c => c.split("="))
+  );
+
+  if (cookies.user) {
+    document.getElementById("userGreeting").textContent =
+      `Bonjour ${decodeURIComponent(cookies.user)}`;
+  }
+</script>
 
 <script>
   let allProjects = [];
@@ -134,6 +150,6 @@
 </script>
 
 
-
+</div>
 </body>
 </html>
