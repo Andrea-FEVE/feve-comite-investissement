@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     }
 
     const url =
-      `https://api.airtable.com/v0/${process.env.BASE_ID}/Members` +
+      `https://api.airtable.com/v0/${process.env.BASE_ID}/tblT9I7XHoEQ12B5Z/viwzw7T6gEJjgOB9h` +
       `?filterByFormula=${encodeURIComponent(`{UserID}="${userId}"`)}`;
 
     console.log("🌐 Airtable URL:", url);
