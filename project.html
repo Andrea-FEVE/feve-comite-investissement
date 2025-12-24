@@ -17,7 +17,6 @@
 
 <h2>Leave a review</h2>
 <form id="form">
-  <input name="author" placeholder="Your name" required><br><br>
   <textarea name="comment" placeholder="Your review" required></textarea><br><br>
   <button>Submit</button>
 </form>
@@ -39,7 +38,6 @@
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({
         slug,
-        author: form.author.value,
         comment: form.comment.value
       })
     });
