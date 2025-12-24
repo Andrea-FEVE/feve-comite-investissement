@@ -223,20 +223,20 @@ button {
     <label>
       Compte tenu des caractéristiques et du prix de la ferme, considérez-vous qu'il y ait un risque s'il devait y avoir revente dans 7 à 10 ans ?
       <div class="tags" data-name="risque">
-        <span data-value="Fort">Fort</span>
-        <span data-value="Moyen">Moyen</span>
-        <span data-value="Faible">Faible</span>
+        <span data-value="Fort" class="no">Fort</span>
+        <span data-value="Moyen" class="neutral">Moyen</span>
+        <span data-value="Faible" class="yes">Faible</span>
       </div>
     </label>
 
     <label>
       A quel point serait-il facile ou difficile de trouver un autre locataire en cas de défaut du/des PP envisagés ?
       <div class="tags" data-name="locataire">
-        <span data-value="Facile">Facile</span>
-        <span data-value="Modérément facile">Modérément facile</span>
-        <span data-value="Modérément difficile">Modérément difficile</span>
-        <span data-value="Difficile">Difficile</span>
-        <span data-value="Très difficile">Très difficile</span>
+        <span data-value="Facile" class="yes">Facile</span>
+        <span data-value="Modérément facile" class="yes">Modérément facile</span>
+        <span data-value="Modérément difficile" class="neutral">Modérément difficile</span>
+        <span data-value="Difficile" class="no">Difficile</span>
+        <span data-value="Très difficile" class="no">Très difficile</span>
       </div>
     </label>
 
@@ -276,24 +276,44 @@ document.getElementById("userField").value =
 
 function setupTags() {
   document.querySelectorAll(".tags").forEach(group => {
+    console.log("🎯 Tag group found:", group.dataset.name);
+
     group.addEventListener("click", e => {
       if (e.target.tagName !== "SPAN") return;
 
-      group.querySelectorAll("span").forEach(s => s.classList.remove("active"));
-      e.target.classList.add("active");
+      console.log(
+        "🖱️ Click on",
+        group.dataset.name,
+        e.target.dataset.value
+      );
 
-      const name = group.dataset.name;
+      group.querySelectorAll("span").forEach(s => {
+        s.classList.remove("active");
+      });
+
+      e.target.classList.add("active");
       group.dataset.value = e.target.dataset.value;
 
-      if (name === "decision") {
+      console.log(
+        "✅ Selected value:",
+        group.dataset.name,
+        group.dataset.value
+      );
+
+      if (group.dataset.name === "decision") {
+        const show =
+          e.target.dataset.value.includes("conditions");
         document.getElementById("conditionsField").style.display =
-          e.target.dataset.value.includes("conditions") ? "block" : "none";
+          show ? "block" : "none";
+
+        console.log("📌 Conditions field:", show ? "shown" : "hidden");
       }
     });
   });
 }
 
 setupTags();
+
 
 </script>
 
