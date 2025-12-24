@@ -1,51 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Project</title>
+  <meta charset="UTF-8" />
+  <title>Projet</title>
+  <style>
+    body {
+      font-family: system-ui;
+      background: #f7f8fa;
+      padding: 40px;
+    }
+
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+    }
+
+    img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+  </style>
 </head>
 <body>
 
-<script>
-  fetch("/api/auth")
-    .then(r => r.json())
-    .then(a => { if (!a.authenticated) location.href="/login.html"; });
-</script>
-
-<h1 id="title"></h1>
-<p id="description"></p>
-
-<h2>Leave a review</h2>
-<form id="form">
-  <textarea name="comment" placeholder="Your review" required></textarea><br><br>
-  <button>Submit</button>
-</form>
+<div class="page" id="project"></div>
 
 <script>
-  const slug = new URLSearchParams(location.search).get("slug");
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
 
   fetch(`/api/project?slug=${slug}`)
     .then(r => r.json())
     .then(p => {
-      title.textContent = p.name;
-      description.textContent = p.description;
-    });
+      document.getElementById("project").innerHTML = `
+        <h1>${p.name}</h1>
+        <div class="meta">${p.department} · ${p.dateComite}</div>
 
-  form.onsubmit = async e => {
-    e.preventDefault();
-    await fetch("/api/review", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({
-        slug,
-        comment: form.comment.value
-      })
+        ${p.photo ? `<img src="${p.photo}" />` : ""}
+
+        <div class="section">
+          <strong>Nom des porteurs de projets</strong><br>
+          ${p.porteurs}
+        </div>
+
+        <div class="section">
+          <strong>Surface de la ferme</strong><br>
+          ${p.surface ? p.surface + " ha" : "—"}
+        </div>
+
+        <div class="section">
+          <strong>Montant</strong><br>
+          ${p.montant ? p.montant + " €" : "—"}
+        </div>
+
+        <div class="section">
+          <strong>Lien vers le parcellaire</strong><br>
+          ${
+            p.parcellaire
+              ? `<a href="${p.parcellaire}" target="_blank">Voir le parcellaire</a>`
+              : "—"
+          }
+        </div>
+
+        <div class="section">
+          <strong>Description</strong><br>
+          <p>${p.description}</p>
+        </div>
+
+        <div class="section">
+          <h2>Votre avis sur le projet</h2>
+          <!-- form comes next -->
+        </div>
+      `;
     });
-    alert("Review submitted");
-    form.reset();
-  };
 </script>
 
 </body>
 </html>
-
